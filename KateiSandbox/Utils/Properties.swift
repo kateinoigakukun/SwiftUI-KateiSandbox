@@ -89,32 +89,34 @@ struct ClassDesc {
     var numberOfFields: Int32
 }
 
-func struct_properties(of type: Any.Type) -> [(name: String, typeName: Any.Type)] {
+func struct_properties(of type: Any.Type) -> [(name: String, typeName: String)] {
     let md = unsafeBitCast(type, to: UnsafeMutablePointer<StructMD>.self)
     let fields = md.pointee
         .ntd.pointee
         .fd.advanced().pointee
         .fields
-        .map(size: Int(md.pointee.ntd.pointee.numberOfFields)) { record in
-            (
+        .map(size: Int(md.pointee.ntd.pointee.numberOfFields)) { record -> (String, String) in
+            let mangled = String(cString: record.pointee.mangledTypeName.advanced())
+            return (
                 String(cString: record.pointee.fieldName.advanced()),
-                _typeByName(String(cString: record.pointee.mangledTypeName.advanced()))!
+                _typeByName(mangled).map { _typeName($0) } ?? mangled
             )
     }
     return fields
 }
 
-func class_properties(of type: Any.Type) -> [(name: String, typeName: Any.Type?)] {
+func class_properties(of type: Any.Type) -> [(name: String, typeName: String)] {
     let md = unsafeBitCast(type, to: UnsafeMutablePointer<ClassMD>.self)
     print(md.pointee.ntd.pointee.numberOfFields)
     let fields = md.pointee
         .ntd.pointee
         .fd.advanced().pointee
         .fields
-        .map(size: Int(md.pointee.ntd.pointee.numberOfFields)) { record in
-            (
+        .map(size: Int(md.pointee.ntd.pointee.numberOfFields)) { record -> (String, String) in
+            let mangled = String(cString: record.pointee.mangledTypeName.advanced())
+            return (
                 String(cString: record.pointee.fieldName.advanced()),
-                _typeByName(String(cString: record.pointee.mangledTypeName.advanced()))
+                _typeByName(mangled).map { _typeName($0) } ?? mangled
             )
     }
     return fields

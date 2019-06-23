@@ -40,7 +40,13 @@ class MyUnaryDynamicViewProperty: DynamicViewProperty, Loggable {
         logger.traceCall()
     }
 }
-
+class PureBindableObject: BindableObject, Loggable {
+    let _didChange = PassthroughSubject<Int, Never>()
+    var didChange: PassthroughSubject<Int, Never> {
+        logger.traceCall()
+        return _didChange
+    }
+}
 class MyBindableObject: BindableObject, _BindableObjectViewProperty, Loggable {
     let _didChange = PassthroughSubject<Int, Never>()
     var didChange: PassthroughSubject<Int, Never> {

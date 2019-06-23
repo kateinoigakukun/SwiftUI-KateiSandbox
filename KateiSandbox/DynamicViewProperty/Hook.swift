@@ -8,7 +8,6 @@
 
 import SwiftUI
 
-let RTLD_DEFAULT = UnsafeMutableRawPointer(bitPattern: -2)
 struct DVP_DispatchHookView: View, _View, Loggable {
     struct MyValue: Loggable {
         init() { logger.traceCall() }
@@ -17,14 +16,20 @@ struct DVP_DispatchHookView: View, _View, Loggable {
     let unaryDynamicProperty = MyUnaryDynamicViewProperty()
     let objectBinding = ObjectBinding(initialValue: MyBindableObject())
     let stateValue = State(initialValue: MyValue())
+    let environmentObject = EnvironmentObject<PureBindableObject>()
+    let bindableObject = MyBindableObject()
 
     init() {
+        print(struct_properties(of: _ViewOutputs.self))
         logger.traceCall()
     }
 
     var body: some View {
         logger.traceCall()
-        return Text("Hello")
+        return VStack {
+            DVP_DispatchHook_ChildView()
+            Text(String(describing: stateValue.value))
+        }
     }
 
     // _ViewOutputsの初期化が出来ないのでコメントアウト
@@ -33,10 +38,10 @@ struct DVP_DispatchHookView: View, _View, Loggable {
 //        logger.traceCall()
 //        fatalError()
 //    }
-    static func _makeViewList(view: _GraphValue<Self>, inputs: _ViewListInputs) -> _ViewListOutputs {
-        logger.traceCall()
-        fatalError()
-    }
+//    static func _makeViewList(view: _GraphValue<Self>, inputs: _ViewListInputs) -> _ViewListOutputs {
+//        logger.traceCall()
+//        fatalError()
+//    }
     static func _visitViewType<A1: _ViewTypeVisitor>(visitor: inout A1) {
         logger.traceCall()
     }
@@ -50,14 +55,14 @@ struct DVP_DispatchHook_ChildView: View, Loggable {
         return Text("World")
     }
     
-    static func _makeView(view: _GraphValue<Self>, inputs: _ViewInputs) -> _ViewOutputs {
-        logger.traceCall()
-        fatalError()
-    }
-    static func _makeViewList(view: _GraphValue<Self>, inputs: _ViewListInputs) -> _ViewListOutputs {
-        logger.traceCall()
-        fatalError()
-    }
+//    static func _makeView(view: _GraphValue<Self>, inputs: _ViewInputs) -> _ViewOutputs {
+//        logger.traceCall()
+//        fatalError()
+//    }
+//    static func _makeViewList(view: _GraphValue<Self>, inputs: _ViewListInputs) -> _ViewListOutputs {
+//        logger.traceCall()
+//        fatalError()
+//    }
     static func _visitViewType<A1: _ViewTypeVisitor>(visitor: inout A1) {
         logger.traceCall()
     }
