@@ -7,10 +7,17 @@
 //
 
 import SwiftUI
-
+import Combine
 struct ContentView : View {
     var body: some View {
-        Text("Hello World")
+        NavigationView {
+            List {
+                NavigationButton(destination: DVP_Fields_View()) {
+                    Text("DVP Fields")
+                }
+            }
+            .navigationBarTitle(Text("KateiSandbox"))
+        }
     }
 }
 
