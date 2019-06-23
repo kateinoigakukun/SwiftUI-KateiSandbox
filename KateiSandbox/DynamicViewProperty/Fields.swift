@@ -9,18 +9,6 @@
 import SwiftUI
 import Combine
 
-class MyDynamicViewProperty: DynamicViewProperty {
-}
-
-class MyBindableObject: BindableObject {
-    let didChange = PassthroughSubject<Int, Never>()
-}
-
-class MyUnaryBindableObject: BindableObject {
-    let didChange = PassthroughSubject<Int, Never>()
-    static var _isUnary: Bool { return true }
-}
-
 struct AnyPropertyType: Identifiable {
     let name: String
     let isUnary: Bool

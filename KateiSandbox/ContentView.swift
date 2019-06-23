@@ -15,6 +15,9 @@ struct ContentView : View {
                 NavigationButton(destination: DVP_Fields_View()) {
                     Text("DVP Fields")
                 }
+                NavigationButton(destination: DVP_DispatchHookView()) {
+                    Text("DVP Dispatch Hook")
+                }
             }
             .navigationBarTitle(Text("KateiSandbox"))
         }
