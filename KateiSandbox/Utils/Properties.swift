@@ -57,12 +57,11 @@ struct FieldRecord {
 
 struct StructMD {
     var kind: Int
-    var ntd: UnsafeMutablePointer<StructDesc>
+    var nominalTypeDescriptor: UnsafeMutablePointer<StructDesc>
 }
 struct StructDesc {
-    let space1: Int64
-    let space2: Int64
-    var fd: RelativePointer<FD>
+    let space1, space2: Int64
+    var fieldDescriptor: RelativePointer<FD>
     var numberOfFields: Int32
 }
 
@@ -89,13 +88,32 @@ struct ClassDesc {
     var numberOfFields: Int32
 }
 
+typealias StructMetadata = StructMD
+
+func properties(of type: Any.Type) -> [(name: String, typeName: String)] {
+    let metadata = unsafeBitCast(type, to: UnsafeMutablePointer<StructMetadata>.self)
+    let numberOfFields = Int(metadata.pointee.nominalTypeDescriptor.pointee.numberOfFields)
+    return metadata.pointee.nominalTypeDescriptor.pointee
+        .fieldDescriptor.advanced().pointee
+        .fields
+        .map(size: numberOfFields) { record -> (String, String) in
+            let mangledTypeName = String(
+                cString: record.pointee.mangledTypeName.advanced()
+            )
+            return (
+                String(cString: record.pointee.fieldName.advanced()),
+                _typeByName(mangledTypeName).map { _typeName($0) } ?? mangledTypeName
+            )
+    }
+}
+
 func struct_properties(of type: Any.Type) -> [(name: String, typeName: String)] {
     let md = unsafeBitCast(type, to: UnsafeMutablePointer<StructMD>.self)
     let fields = md.pointee
-        .ntd.pointee
-        .fd.advanced().pointee
+        .nominalTypeDescriptor.pointee
+        .fieldDescriptor.advanced().pointee
         .fields
-        .map(size: Int(md.pointee.ntd.pointee.numberOfFields)) { record -> (String, String) in
+        .map(size: Int(md.pointee.nominalTypeDescriptor.pointee.numberOfFields)) { record -> (String, String) in
             let mangled = String(cString: record.pointee.mangledTypeName.advanced())
             return (
                 String(cString: record.pointee.fieldName.advanced()),

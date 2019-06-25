@@ -35,23 +35,8 @@ struct ContentView : View {
     }
     func isView<T: View>(_ type: T.Type) {
     }
-    
-    
 }
 
-struct CounterView: View {
-    
-    var counter = State<Int>(initialValue: 0)
-    
-    var body: some View {
-        VStack {
-            Text(counter.value.description)
-            Button(action: { self.counter.value += 1 }) {
-                Text("+")
-            }
-        }
-    }
-}
 
 #if DEBUG
 struct ContentView_Previews : PreviewProvider {
